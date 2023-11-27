@@ -80,14 +80,15 @@ a:hover {
 }
 
 .logo-container {
-
+    display: flex;
     align-items: center;
 }
 
 .logo {
     max-width: 100px;
-    height: 4;
+    height: auto; /* Ajustar la altura automáticamente */
     margin-right: 10px;
+    flex-shrink: 0; /* Evitar que el logo se encoja */
 }
 
 .header h1 {
