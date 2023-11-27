@@ -1,0 +1,148 @@
+/* Estilos CSS */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.column {
+    flex: 1;
+    margin: 10px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+h1, h2, h3 {
+    color: #333;
+}
+
+button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    resize: vertical;
+}
+
+input[type="radio"] {
+    margin-right: 5px;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+a {
+    color: #0066cc;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Estilos para el encabezado con el logotipo */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-bottom: 1px solid #ccc;
+}
+
+.logo-container {
+
+    align-items: center;
+}
+
+.logo {
+    max-width: 100px;
+    height: 4;
+    margin-right: 10px;
+}
+
+.header h1 {
+    color: #333;
+    font-size: 24px; /* Tamaño del título */
+    margin: 0;
+}
+.sections {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.section-button {
+    margin: 0 10px;
+    padding: 8px 16px;
+    background-color: #0066cc;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.section-button:hover {
+    background-color: #0059b3;
+}
+  
+  /* Estilos para dispositivos móviles */
+@media screen and (max-width: 800px) {
+    body {
+        font-size: 14px; /* Ajustar el tamaño de fuente base para dispositivos móviles */
+    }
+    .header {
+        padding: 10px; /* Reducir el relleno del encabezado */
+    }
+    .logo-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .logo {
+        max-width: 20px;  /* Reducir el tamaño del logotipo */
+        margin-bottom: 10px;
+    }
+    .container {
+        flex-direction: column;
+    }
+    .column {
+        margin: 10px 0;
+        padding: 10px; /* Añadir relleno a las columnas */
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .section-button {
+        margin: 5px 0;
+        padding: 8px 16px;
+    }
+
+}
