@@ -85,7 +85,7 @@ a:hover {
 }
 
 .logo {
-    max-width: 100px;
+    max-width: 150px;
     height: auto; /* Ajustar la altura automáticamente */
     margin-right: 10px;
     flex-shrink: 0; /* Evitar que el logo se encoja */
@@ -129,7 +129,7 @@ a:hover {
         align-items: center;
     }
     .logo {
-        max-width: 20px;  /* Reducir el tamaño del logotipo */
+        max-width: 40px;  /* Reducir el tamaño del logotipo */
         margin-bottom: 10px;
     }
     .container {
