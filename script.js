@@ -117,7 +117,6 @@
                 return this.maskCase(SHARP_SCALE[tone],this.strTone) + this.modifiers;
             }
         };
-        
         this.maskCase = function (strChord, mask) {
             if(mask.length == 0) {
                 return strChord;
