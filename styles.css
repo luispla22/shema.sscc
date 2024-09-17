@@ -12,13 +12,13 @@ body {
     display: flex;
     justify-content: space-between;
     padding: 30px;
-    max-width: 1200px;
+    max-width: 1400px; /* Ampliar el contenedor para que las columnas tengan más espacio */
     margin: auto;
 }
 
 .column {
     flex: 1;
-    margin: 10px;
+    margin: 15px; /* Ajuste del margen para reducir la separación entre columnas */
     background-color: #fff;
     border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -29,6 +29,7 @@ body {
 .column:hover {
     transform: translateY(-5px);
 }
+
 
 h1, h2, h3 {
     color: #444;
