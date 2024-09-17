@@ -89,7 +89,7 @@ a:hover {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 20px;
+    padding: 10px 20px; /* Reducido el padding para hacerlo menos grueso */
     background-color: #fff;
     border-bottom: 1px solid #ddd;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
@@ -101,9 +101,9 @@ a:hover {
 }
 
 .logo {
-    max-width: 140px;
+    max-width: 120px; /* Reducir el tamaño del logo */
     height: auto;
-    margin-right: 20px;
+    margin-right: 15px;
 }
 
 .sections {
@@ -112,21 +112,27 @@ a:hover {
 }
 
 .section-button {
-    margin: 0 10px;
-    padding: 10px 20px;
+    margin: 0 8px;
+    padding: 6px 14px; /* Reducir el tamaño del botón */
     background-color: #007bff;
     color: white;
     border: none;
-    border-radius: 8px;
-    font-size: 15px;
+    border-radius: 6px;
+    font-size: 13px; /* Reducir el tamaño del texto del botón */
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.section-button img {
+    width: 24px; /* Ajustar el tamaño de los iconos dentro de los botones */
+    height: 24px;
 }
 
 .section-button:hover {
     background-color: #0056b3;
     transform: translateY(-2px);
 }
+
 
 /* Estilos para dispositivos móviles */
 @media screen and (max-width: 800px) {
