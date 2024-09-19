@@ -30,7 +30,6 @@ body {
     transform: translateY(-5px);
 }
 
-
 h1, h2, h3 {
     color: #444;
     font-weight: 600;
@@ -134,7 +133,6 @@ a:hover {
     transform: translateY(-2px);
 }
 
-
 /* Estilos para dispositivos móviles */
 @media screen and (max-width: 800px) {
     .container {
@@ -154,4 +152,32 @@ a:hover {
         margin: 5px 0;
         padding: 10px;
     }
+}
+
+/* ===== Cuenta atrás personalizada ===== */
+#countdown-container {
+    font-family: 'Roboto', sans-serif;
+    text-align: center;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    max-width: 300px;
+    margin: 20px auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#countdown-container p {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+#countdown {
+    font-size: 24px;
+    font-weight: bold;
+    color: #ff4500;
+}
+
+#countdown-container span {
+    display: block;
 }
