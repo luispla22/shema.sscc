@@ -158,26 +158,49 @@ a:hover {
 #countdown-container {
     font-family: 'Roboto', sans-serif;
     text-align: center;
-    background-color: #fff;
-    padding: 20px;
+    background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); /* Gradiente de fondo colorido */
+    padding: 30px;
     border-radius: 12px;
-    max-width: 300px;
-    margin: 20px auto;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 350px; /* Aumentar el ancho para que haya más espacio */
+    margin: 30px auto;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    border: 2px solid #ff4500; /* Borde para darle más definición */
+    position: relative; /* Posicionar el elemento relativamente para el pseudo-elemento */
+}
+
+#countdown-container::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    width: calc(100% + 20px);
+    height: calc(100% + 20px);
+    background: rgba(255, 69, 0, 0.2); /* Fondo sutil sobre el borde */
+    border-radius: 16px;
+    z-index: -1; /* Asegúrate de que el pseudo-elemento esté detrás del contenedor */
 }
 
 #countdown-container p {
-    font-size: 18px;
-    color: #333;
-    margin-bottom: 10px;
+    font-size: 20px;
+    color: #fff;
+    margin-bottom: 15px;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Sombra para un efecto de profundidad */
 }
 
 #countdown {
-    font-size: 24px;
-    font-weight: bold;
-    color: #ff4500;
+    font-size: 32px;
+    font-weight: 700;
+    color: #fff;
+    background: rgba(255, 69, 0, 0.7); /* Fondo de color semi-transparente para el contador */
+    padding: 10px;
+    border-radius: 8px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Sombra más prominente para el texto */
 }
 
 #countdown-container span {
     display: block;
+    font-size: 18px;
+    color: #fff;
 }
+
