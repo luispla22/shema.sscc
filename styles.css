@@ -155,29 +155,66 @@ a:hover {
 }
 
 /* ===== Cuenta atrás personalizada ===== */
-#countdown-container {
-    font-family: 'Roboto', sans-serif;
+/* Contenedor del contador */
+.countdown-container {
     text-align: center;
-    background-color: #fff;
+    background-color: #ffefc3;
     padding: 20px;
-    border-radius: 12px;
-    max-width: 300px;
-    margin: 20px auto;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    margin-bottom: 20px;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
-#countdown-container p {
-    font-size: 18px;
-    color: #333;
-    margin-bottom: 10px;
-}
-
-#countdown {
-    font-size: 24px;
+/* Título del contador */
+.countdown-title {
+    font-size: 2.5em;
     font-weight: bold;
-    color: #ff4500;
+    color: #d46b08;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px #f7a641;
 }
 
-#countdown-container span {
-    display: block;
+/* Elementos individuales del contador */
+.countdown {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    font-size: 2em;
+    font-weight: bold;
+    color: #f6471e;
 }
+
+.countdown div {
+    background-color: #f7a641;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+    min-width: 80px;
+}
+
+.countdown div span {
+    display: block;
+    font-size: 0.6em;
+    color: #fff;
+    margin-top: 8px;
+}
+
+/* Estilo responsivo para móviles */
+@media screen and (max-width: 600px) {
+    .countdown {
+        font-size: 1.5em;
+    }
+
+    .countdown div {
+        min-width: 60px;
+    }
+
+    .countdown-title {
+        font-size: 2em;
+    }
+}
+
