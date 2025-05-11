@@ -382,34 +382,3 @@
         document.getElementById(elem_id).scrollIntoView(true);
     }
     
-    // Fecha del evento
-var eventDate = new Date("Sep 29, 2024 20:30:00").getTime();
-
-// Actualizar la cuenta cada segundo
-var countdown = setInterval(function() {
-
-  // Obtener la fecha y hora actual
-  var now = new Date().getTime();
-
-  // Encontrar la diferencia entre el tiempo actual y la fecha del evento
-  var timeRemaining = eventDate - now;
-
-  // Cálculos de días, horas, minutos y segundos
-  var days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
-  var hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  var minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
-  var seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-
-  // Mostrar el resultado en el elemento con id="countdown"
-  document.getElementById("countdown").innerHTML = days + "d " + hours + "h "
-  + minutes + "m " + seconds + "s ";
-
-  // Si la cuenta llega a cero, detener el contador
-  if (timeRemaining < 0) {
-    clearInterval(countdown);
-    document.getElementById("countdown").innerHTML = "¡Es hora de la Misa de Jóvenes!";
-  }
-}, 1000);
-
-    
-    
