@@ -163,52 +163,79 @@
         const stats = {"words": 0, "chords": 0, "long": 0, "chord-line": false};
         const LONG_WORD = 4;
         
-        const tokens = line.split(/\s+/);
+        // Si la línea está vacía, no es una línea de acordes
+        if (!line || line.trim().length === 0) return stats;
+        
+        // Dividir por espacios y filtrar elementos vacíos
+        const tokens = line.split(/\s+/).filter(t => t.length > 0);
+        
+        // Si no hay tokens, no es línea de acordes
+        if (tokens.length === 0) return stats;
+        
         let countChord = 0;
         let countNormal = 0;
         let countLong = 0;
         
         for (let i = 0; i < tokens.length; i++) {
-            if(tokens[i].length > 0) {
-                const ch = new chord(tokens[i]);
-                
-                if(ch.tone == null) {
-                    countNormal += 1;
-                    if(tokens[i].length > LONG_WORD) {
-                        countLong += 1;
-                    }
-                } else {
-                    countChord += 1;
+            const ch = new chord(tokens[i]);
+            
+            if (ch.tone == null) {
+                // No es un acorde
+                countNormal += 1;
+                if (tokens[i].length > LONG_WORD) {
+                    countLong += 1;
                 }
+            } else {
+                // Es un acorde
+                countChord += 1;
             }
         }
         
-        // Determinar si es una línea de acordes
-        // Una línea es de acordes si:
-        // 1. Tiene al menos un acorde Y
-        // 2. No tiene palabras largas Y
-        // 3. Tiene más acordes que palabras normales
-        let eval = false;
-        if(countChord == 0 || countLong > 0) {
-            eval = false;
-        } else {
-            eval = (countChord > countNormal);
-        }
-    
         stats['words'] = countNormal;
         stats['chords'] = countChord;
         stats['long'] = countLong;
-        stats['chord-line'] = eval;
-    
+        
+        // Determinar con reglas más flexibles si es línea de acordes:
+        // 1. Si todos los tokens son acordes
+        // 2. Si hay más acordes que palabras y ninguna palabra es larga
+        if (countChord > 0 && (
+            countNormal === 0 || 
+            (countChord >= countNormal && countLong === 0)
+        )) {
+            stats['chord-line'] = true;
+        }
+        
         return stats;
     }
     
     // Detecta si una línea es de acordes
     function detectChordLine(line) {
-        // Verificamos rápidamente si la línea está vacía o es muy corta
-        if (!line || line.trim().length === 0) return false;
+        // Verificamos casos especiales manualmente
+        // Por ejemplo, líneas con patrones comunes de acordes como "RE LA7 SOL"
+        const trimmedLine = line.trim();
         
-        // Usar el analizador de líneas para detectar si es una línea de acordes
+        // Caso especial: líneas cortas con un solo acorde o espaciado específico
+        if (/^[A-G][#b]?[m7]?(\s*\(.*\))?$/i.test(trimmedLine)) return true;
+        
+        // Caso especial: líneas con varios acordes separados por más espacios
+        if (/^[A-G][#b]?[m7\(\)]*(\s+[A-G][#b]?[m7\(\)]*)+$/i.test(trimmedLine)) return true;
+        
+        // Caso especial: notación española de acordes (DO, RE, MI, etc.)
+        const spanishChords = ["DO", "RE", "MI", "FA", "SOL", "LA", "SI"];
+        let isSpanishChordLine = false;
+        
+        if (trimmedLine.length > 0) {
+            const tokens = trimmedLine.split(/\s+/);
+            isSpanishChordLine = tokens.every(token => {
+                // Verificar si es un acorde en notación española
+                const baseChord = token.replace(/[#b7m\(\)]+/g, '').toUpperCase();
+                return spanishChords.includes(baseChord);
+            }) && tokens.length > 0;
+        }
+        
+        if (isSpanishChordLine) return true;
+        
+        // Si no es un caso especial, usar el análisis regular
         const stats = lineAnalisys(line);
         return stats['chord-line'];
     }
@@ -324,8 +351,52 @@
 
         // 2) Líneas formadas sólo por acordes (RE SOL LA...)
         if (detectChordLine(line)) {
-          return splitBySpaces(line).map(tok =>
-            isChord(tok) ? `<span class="chord">${transp(tok)}</span>` : tok
+          // Procesamiento mejorado para líneas de acordes
+          const tokens = [];
+          const regex = /(\s+)|([A-G]|DO|RE|MI|FA|SOL|LA|SI)([#b]?)(m|M|7|m7|maj7|dim|aug|\([^)]*\))*/gi;
+          let match;
+          let lastIndex = 0;
+          
+          // Encuentra todos los acordes y espacios en la línea
+          while ((match = regex.exec(line)) !== null) {
+            // Si hay texto antes del acorde actual, añadirlo como texto normal
+            if (match.index > lastIndex) {
+              tokens.push({
+                text: line.substring(lastIndex, match.index),
+                isChord: false
+              });
+            }
+            
+            // Si es un espacio, añadirlo tal cual
+            if (match[1]) {
+              tokens.push({
+                text: match[1],
+                isChord: false
+              });
+            } else {
+              // Es un acorde, añadirlo como tal
+              tokens.push({
+                text: match[0],
+                isChord: true
+              });
+            }
+            
+            lastIndex = regex.lastIndex;
+          }
+          
+          // Añadir cualquier texto restante después del último acorde
+          if (lastIndex < line.length) {
+            tokens.push({
+              text: line.substring(lastIndex),
+              isChord: false
+            });
+          }
+          
+          // Convertir los tokens a HTML
+          return tokens.map(token => 
+            token.isChord 
+              ? `<span class="chord">${transp(token.text)}</span>` 
+              : token.text
           ).join('');
         }
 
