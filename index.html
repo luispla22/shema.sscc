@@ -1,79 +1,357 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" /> 
-    <link rel="stylesheet" type="text/css" href="styles.css">
-    <script src="script.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Mi Cancionero</title>
+  <style>
+    :root { --sidebar-bg: #2d2d2d; --accent: #d9230f; }
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="images/favicon.jpg">
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: #f7f7f7; display: flex; height: 100vh; overflow: hidden; }
 
-    <!-- Fuente Roboto de Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    /* —— Sidebar —— */
+    aside { width: 300px; background: var(--sidebar-bg); color: #fff; padding: 1rem; display: flex; flex-direction: column; }
+    aside h1 { margin-bottom: 1rem; font-size: 1.5rem; }
+    #songSearch { width: 100%; padding: .6rem .8rem; margin-bottom: 1rem; border: none; border-radius: 6px; font-size: 1rem; }
+    #songList { list-style: none; overflow-y: auto; flex: 1; }
+    #songList li { padding: .55rem .6rem; border-radius: 6px; cursor: pointer; user-select: none; transition: background .2s; }
+    #songList li:hover { background: #444; }
+    #songList li.active { background: #555; }
+
+    /* —— Main —— */
+    main { flex: 1; display: flex; flex-direction: column; padding: 1rem 1.5rem; height: 100%; }
+    #transposeControls { margin-bottom: .8rem; display: flex; align-items: center; gap: .5rem; }
+    button.transpose { padding: .45rem .9rem; border: none; background: var(--sidebar-bg); color: #fff; border-radius: 6px; font-size: 1rem; cursor: pointer; transition: background .2s; }
+    button.transpose:hover { background: #000; }
+    #keyLabel { font-weight: 600; }
+
+    pre#songDisplay { flex: 1; overflow: auto; background: #fff; border-radius: 8px; padding: 1rem; white-space: pre; font-family: monospace; line-height: 1.4; }
+    .chord { color: var(--accent); font-weight: 700; }
+  </style>
 </head>
-
-
 <body>
-<!-- Encabezado con logotipo y título -->
-<div class="header">
-    <div class="logo-container">
-        <img src="images/shema.jpg" alt="Shemá" class="logo"> 
+  <!-- —— Sidebar —— -->
+  <aside>
+    <h1>Mi Cancionero</h1>
+    <input id="songSearch" type="text" placeholder="Buscar canción…">
+    <ul id="songList"></ul>
+  </aside>
+
+  <!-- —— Main —— -->
+  <main>
+    <div id="transposeControls" hidden>
+      <button id="down" class="transpose" title="Bajar semitono">−</button>
+      <span id="keyLabel">Tono original</span>
+      <button id="up" class="transpose" title="Subir semitono">+</button>
     </div>
-    <!-- Sección para elegir -->
-    <div class="sections">
-        <button class="section-button" onclick="window.open('https://cutt.ly/Ewc8qAF1', '_blank', 'width=800,height=600')">Cancionero SHEMÁ</button>
-      	 <button class="section-button" title="Nuestra lista de spotify" onclick="window.open('https://open.spotify.com/playlist/2Ar0TTlpDZXfwVBsJgBEz0?si=d898551170c043d0', '_blank', 'width=800,height=600')">
-        <img src="images/spoty.png" alt="Spotify" width="30" height="30">
-    </button>
-         <button class="section-button" title="Click para suscribirte al Calendario" onclick="window.open('https://cutt.ly/swcrBiuc', '_blank', 'width=800,height=600')">
-        <img src="images/calendar.png" alt="Spotify" width="30" height="30">
-    </button>
-    </a>
-    </div>
-</div>
+    <pre id="songDisplay">Cargando repertorio…</pre>
+  </main>
 
-	
-	<div id="countdown-container">
-  <p>Cuenta atrás para volver a la misa de Jóvenes:</p>
-  <span id="countdown"></span>
-</div>
+  <!-- 1️⃣ Motor de acordes -->
+  <script>
+    /* A.Gonzalez. SJ AMDG */
+    // Motor de detección y transposición de acordes
+    const OCTAVE = 12;
+    const CHAR_SHARP = "#";
+    const CHAR_FLAT = "b";
+    
+    // Notas musicales en notación española
+    const notes_spa = {"do":0, "re":2, "mi":4, "fa":5, "sol":7, "la":9, "si":11};
+    
+    // Escalas para transponer
+    const SHARP_SCALE_SPA = ["do", "do#","re", "re#", "mi", "fa", "fa#", 
+                             "sol", "sol#", "la", "la#", "si"];
+    const FLAT_SCALE_SPA = ["do", "reb","re", "mib", "mi", "fa", "solb", 
+                            "sol", "lab", "la", "sib", "si"];
+    
+    // Configuración por defecto - Cifrado español
+    let FLAT_SCALE = FLAT_SCALE_SPA;
+    let SHARP_SCALE = SHARP_SCALE_SPA;
+    let notes = notes_spa;
+    
+    // Clase chord - Maneja la detección y transposición de acordes
+    function chord(cSpec) {
+        this.tone = 0;
+        this.chordText = cSpec;
+        this.position = -1;
+        this.modifiers = "";
+     
+        this.splitSpec = function(spec) {
+            var parts = {tone: 0, strTone: "", rest: ""};
+            for (var key in notes) {
+                if (notes.hasOwnProperty(key)) {
+                    var len = key.length;
+                    if(spec.slice(0, len).toLowerCase() == key) {
+                        parts.strTone = spec.slice(0,len);
+                        parts.tone = notes[key];
+                        parts.rest = spec.slice(len);
+                        return parts;
+                    }
+                }
+            }
+            return null;
+        }
+    
+        this.detectNote = function (spec) {
+            var temp = this.splitSpec(cSpec);
+            if(temp == null) {
+                this.tone = null;
+                return;
+            }
+            this.tone = temp.tone;
+            this.strTone = temp.strTone;
+    
+            if(temp.rest.slice(0,1) == CHAR_SHARP) {
+                this.tone += 1;
+                this.shift = temp.rest.slice(0,1);
+                temp.rest = temp.rest.slice(1);
+            } else if(temp.rest.slice(0,1) == CHAR_FLAT) {
+                this.tone -= 1;
+                this.shift = temp.rest.slice(0,1);
+                temp.rest = temp.rest.slice(1);
+            }
+            this.modifiers = temp.rest;
+            if(this.tone < 0) this.tone += OCTAVE;
+        };
+    
+        this.transposeChord = function(shift) {
+            if(shift == 0 || this.tone == null) return this.chordText;
+            var tone = (this.tone + shift) % OCTAVE;
+            if(this.shift == CHAR_FLAT) {
+                return this.maskCase(FLAT_SCALE[tone], this.strTone) + this.modifiers;
+            } else {
+                return this.maskCase(SHARP_SCALE[tone], this.strTone) + this.modifiers;
+            }
+        };
+        
+        this.maskCase = function (strChord, mask) {
+            if(mask.length == 0) {
+                return strChord;
+            } else if(mask.length == 1) {
+                if(mask == mask.toLowerCase()) {
+                    return strChord.toLowerCase();
+                } 
+                return strChord.toUpperCase();
+            } 
+    
+            var firstLetter = strChord.slice(0, 1);
+            var rest = strChord.slice(1);
+            var mask1 = mask.slice(0,1);
+            var mask2 = mask.slice(1,2);
+            if(mask1 == mask1.toLowerCase()) {
+                firstLetter = firstLetter.toLowerCase();
+            } else {
+                firstLetter = firstLetter.toUpperCase();
+            }
+            if(mask2 == mask2.toLowerCase()) {
+                rest = rest.toLowerCase();
+            } else {
+                rest = rest.toUpperCase();
+            }
+            if(rest.slice(-1).toLowerCase() == CHAR_FLAT) {
+                rest = rest.slice(0,-1) + CHAR_FLAT;
+            }
+            return firstLetter + rest;	 
+        }
+        
+        this.detectNote(cSpec);
+    }
+    
+    // Función mejorada para detectar líneas de acordes
+    function lineAnalisys(line) {
+        const stats = {"words": 0, "chords": 0, "long": 0, "chord-line": false};
+        const LONG_WORD = 4;
+        
+        const tokens = line.split(/\s+/);
+        let countChord = 0;
+        let countNormal = 0;
+        let countLong = 0;
+        
+        for (let i = 0; i < tokens.length; i++) {
+            if(tokens[i].length > 0) {
+                const ch = new chord(tokens[i]);
+                
+                if(ch.tone == null) {
+                    countNormal += 1;
+                    if(tokens[i].length > LONG_WORD) {
+                        countLong += 1;
+                    }
+                } else {
+                    countChord += 1;
+                }
+            }
+        }
+        
+        // Determinar si es una línea de acordes
+        // Una línea es de acordes si:
+        // 1. Tiene al menos un acorde Y
+        // 2. No tiene palabras largas Y
+        // 3. Tiene más acordes que palabras normales
+        let eval = false;
+        if(countChord == 0 || countLong > 0) {
+            eval = false;
+        } else {
+            eval = (countChord > countNormal);
+        }
+    
+        stats['words'] = countNormal;
+        stats['chords'] = countChord;
+        stats['long'] = countLong;
+        stats['chord-line'] = eval;
+    
+        return stats;
+    }
+    
+    // Detecta si una línea es de acordes
+    function detectChordLine(line) {
+        // Verificamos rápidamente si la línea está vacía o es muy corta
+        if (!line || line.trim().length === 0) return false;
+        
+        // Usar el analizador de líneas para detectar si es una línea de acordes
+        const stats = lineAnalisys(line);
+        return stats['chord-line'];
+    }
+  </script>
 
-	
-<div class="container">
-    <div class="column">
-        <form id="frm1">
-            
-            <h2>Trasponedor de acordes:</h2>
-            <textarea name="mydata" rows="10" id="song-input" placeholder="Escribe aquí la canción a transponer."></textarea>
-            <br />
-            <p>Sistema de cifrado de notas:</p>
-            <input type="radio" id="cipher-spanish" name="cipher" value="spanish"checked ><label for="cipher-spanish">Español</label><br />
-            <input type="radio" id="cipher-american" name="cipher" value="american"><label for="cipher-american">Americano</label><br />
-        </form>
-        <p>Pulsa los botones para ajustar la transposición de la canción:</p>
-        <p>
-            <button onclick="decrementShiftCh()">-</button>
-            <button onclick="resetShiftCh()">Reset</button>
-            <button onclick="incrementShiftCh()">+</button>
-        </p>
-		<h2>Cancionero de acordes:</h2>
-		<iframe src="https://docs.google.com/document/d/e/2PACX-1vQMsT4hFWzxLTvNu9-g4WMll2T-otnSPqagqb-uEXEBB-mpTIpVKQfpF5Z0HXPuig/pub?embedded=true" width="100%" height="1000"></iframe>
-    </div>
+  <!-- 2️⃣ Capa de interfaz para la nueva página -->
+  <script>
+    /* ========= CONFIGURACIÓN ========= */
+    const GOOGLE_DOC = "https://docs.google.com/document/d/e/2PACX-1vQMsT4hFWzxLTvNu9-g4WMll2T-otnSPqagqb-uEXEBB-mpTIpVKQfpF5Z0HXPuig/pub";
+    const proxy = url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
 
-    <div class="column">
-        <h2 id="transportada">Canción transportada: </h2>
-        <p>Desplazamiento: <span id="shift-label">0</span> semitonos</p>
-        <div id="display"></div>
-      <h2 id="Spotify">Lista de Spotify: </h2>
-      <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/2Ar0TTlpDZXfwVBsJgBEz0?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-	  <h2>Calendario:</h2>
-	  <iframe src="https://calendar.google.com/calendar/embed?src=abc098a7893fd0497ba6f781d88554b80c8cac82da5d313b0bbe0175fadf92f1%40group.calendar.google.com&ctz=Europe%2FMadrid" style="border: 0" width=100% height="500" frameborder="0" scrolling="no"></iframe>
- 		
-	</div>
-   
+    /* ========= ELEMENTOS ========= */
+    const $list    = document.getElementById('songList');
+    const $search  = document.getElementById('songSearch');
+    const $disp    = document.getElementById('songDisplay');
+    const $key     = document.getElementById('keyLabel');
+    const $ctrl    = document.getElementById('transposeControls');
+    const $btnUp   = document.getElementById('up');
+    const $btnDown = document.getElementById('down');
 
-</div>
-  
-	
+    /* ========= ESTADO ========= */
+    let songs = []; // { title, text }
+    let current = -1; // índice en songs
+    let shift = 0;  // semitonos
+
+    /* ========= UTILIDADES ========= */
+    // — Normaliza todos los espacios "raros" (NBSP, thin space, etc.) a un solo espacio ASCII —
+    const SPACE_REGEX = /[\u00A0\u1680\u180E\u2000-\u200A\u202F\u205F\u3000]/g;
+    const normalizeSpaces = str => str.replace(SPACE_REGEX, ' ');
+    const clean = txt => normalizeSpaces(txt).replace(/\r|\t/g, '');
+
+    // ¿Es un token de acorde?
+    const isChord = tok => (new chord(tok)).tone !== null;
+
+    // Transpone un acorde con el desplazamiento actual
+    const transp = tok => (new chord(tok)).transposeChord(shift);
+
+    // Split que respeta los espacios normales y NBSP
+    const splitBySpaces = line => line.split(/([\s\u00A0]+)/);
+
+    /* ========= CARGA DEL REPERTORIO ========= */
+    async function loadSongs() {
+      try {
+        const res = await fetch(proxy(GOOGLE_DOC));
+        const html = await res.text();
+        parseDoc(html);
+        renderList();
+        $disp.textContent = 'Selecciona una canción…';
+      } catch (err) {
+        console.error(err);
+        $disp.textContent = 'Error al cargar repertorio';
+      }
+    }
+
+    function parseDoc(html) {
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const nodes = [...doc.body.querySelectorAll('h1,h2,h3,h4,h5,h6,p')];
+      let cur = null;
+
+      nodes.forEach(el => {
+        const txt = clean(el.textContent).trimEnd();
+
+        // — Si es un título, empezamos canción nueva —
+        if (el.tagName.match(/^H[1-6]$/) || txt.startsWith('### ')) {
+          if (cur) songs.push(cur);
+          cur = {
+            title: txt.replace(/^###\s*/, ''),
+            text: ''
+          };
+        }
+        // — Si es párrafo, lo añadimos —
+        else if (cur) {
+          const line = clean(
+            el.innerHTML
+              .replace(/<br\s*\/?>(?=\n?)/gi, '\n') // <br> ➜ \n
+              // eliminar cualquier otra etiqueta html
+              .replace(/<[^>]+>/g, '')
+          ).trimEnd();
+          cur.text += (cur.text ? '\n' : '') + line;
+        }
+      });
+      if (cur) songs.push(cur);
+    }
+
+    /* ========= RENDER ========= */
+    function renderList(filter = '') {
+      $list.innerHTML = '';
+      songs
+        .filter(s => s.title.toLowerCase().includes(filter.toLowerCase()))
+        .forEach((song, i) => {
+          const li = document.createElement('li');
+          li.textContent = song.title;
+          if (i === current) li.classList.add('active');
+          li.onclick = () => selectSong(i);
+          $list.appendChild(li);
+        });
+    }
+
+    function renderSong() {
+      if (current === -1) return;
+      const rawLines = songs[current].text.split('\n');
+
+      const htmlLines = rawLines.map(line => {
+        // Normalizamos espacios
+        line = normalizeSpaces(line);
+
+        // 1) Acordes incrustados tipo [C]palabra
+        if (line.includes('[')) {
+          return line.replace(/\[([^\]]+)]/g, (_, chordSpec) =>
+            `<span class="chord">${transp(chordSpec)}</span>`
+          );
+        }
+
+        // 2) Líneas formadas sólo por acordes (RE SOL LA...)
+        if (detectChordLine(line)) {
+          return splitBySpaces(line).map(tok =>
+            isChord(tok) ? `<span class="chord">${transp(tok)}</span>` : tok
+          ).join('');
+        }
+
+        // 3) Texto normal
+        return line;
+      });
+
+      $disp.innerHTML = htmlLines.join('\n');
+      $key.textContent = shift === 0 ? 'Tono original' : (shift > 0 ? `+${shift}` : `${shift}`);
+    }
+
+    /* ========= EVENTOS ========= */
+    function selectSong(i) {
+      current = i;
+      shift = 0;
+      $ctrl.hidden = false;
+      renderList($search.value);
+      renderSong();
+    }
+
+    $search.oninput = () => renderList($search.value);
+    $btnUp.onclick = () => { shift = (shift + 1) % 12; renderSong(); };
+    $btnDown.onclick = () => { shift = (shift + 11) % 12; renderSong(); };
+
+    /* ========= INICIO ========= */
+    loadSongs();
+  </script>
 </body>
 </html>
