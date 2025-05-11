@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" /> 
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <script src="script.js"></script>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/favicon.jpg">
+
+    <!-- Fuente Roboto de Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+
+
+<body>
+<!-- Encabezado con logotipo y título -->
+<div class="header">
+    <div class="logo-container">
+        <img src="images/shema.jpg" alt="Shemá" class="logo"> 
+    </div>
+    <!-- Sección para elegir -->
+    <div class="sections">
+        <button class="section-button"
+      onclick="window.location.href='index.html'">
+      Volver a la página principal
+    </button>
+        <button class="section-button" onclick="window.open('https://cutt.ly/Ewc8qAF1', '_blank', 'width=800,height=600')">Cancionero SHEMÁ</button>
+      	 <button class="section-button" title="Nuestra lista de spotify" onclick="window.open('https://open.spotify.com/playlist/2Ar0TTlpDZXfwVBsJgBEz0?si=d898551170c043d0', '_blank', 'width=800,height=600')">
+        <img src="images/spoty.png" alt="Spotify" width="30" height="30">
+    </button>
+         <button class="section-button" title="Click para suscribirte al Calendario" onclick="window.open('https://cutt.ly/swcrBiuc', '_blank', 'width=800,height=600')">
+        <img src="images/calendar.png" alt="Spotify" width="30" height="30">
+    </button>
+    </a>
+    </div>
+</div>
+
+
+</div>
+
+	
+<div class="container">
+    <div class="column">
+        <form id="frm1">
+            
+            <h2>Trasponedor de acordes:</h2>
+            <textarea name="mydata" rows="10" id="song-input" placeholder="Escribe aquí la canción a transponer."></textarea>
+            <br />
+            <p>Sistema de cifrado de notas:</p>
+            <input type="radio" id="cipher-spanish" name="cipher" value="spanish"checked ><label for="cipher-spanish">Español</label><br />
+            <input type="radio" id="cipher-american" name="cipher" value="american"><label for="cipher-american">Americano</label><br />
+        </form>
+        <p>Pulsa los botones para ajustar la transposición de la canción:</p>
+        <p>
+            <button onclick="decrementShiftCh()">-</button>
+            <button onclick="resetShiftCh()">Reset</button>
+            <button onclick="incrementShiftCh()">+</button>
+        </p>
+		
+    </div>
+
+    <div class="column">
+        <h2 id="transportada">Canción transportada: </h2>
+        <p>Desplazamiento: <span id="shift-label">0</span> semitonos</p>
+        <div id="display"></div>
+     
+	 
+	</div>
+   
+
+</div>
+  
+	
+</body>
+</html>
