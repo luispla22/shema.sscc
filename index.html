@@ -1,79 +1,690 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" /> 
-    <link rel="stylesheet" type="text/css" href="styles.css">
-    <script src="script.js"></script>
-
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="images/favicon.jpg">
-
-    <!-- Fuente Roboto de Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-</head>
-
-
-<body>
-<!-- Encabezado con logotipo y título -->
-<div class="header">
-    <div class="logo-container">
-        <img src="images/shema.jpg" alt="Shemá" class="logo"> 
-    </div>
-    <!-- Sección para elegir -->
-    <div class="sections">
-        <button class="section-button" onclick="window.open('https://cutt.ly/Ewc8qAF1', '_blank', 'width=800,height=600')">Cancionero SHEMÁ</button>
-      	 <button class="section-button" title="Nuestra lista de spotify" onclick="window.open('https://open.spotify.com/playlist/2Ar0TTlpDZXfwVBsJgBEz0?si=d898551170c043d0', '_blank', 'width=800,height=600')">
-        <img src="images/spoty.png" alt="Spotify" width="30" height="30">
-    </button>
-         <button class="section-button" title="Click para suscribirte al Calendario" onclick="window.open('https://cutt.ly/swcrBiuc', '_blank', 'width=800,height=600')">
-        <img src="images/calendar.png" alt="Spotify" width="30" height="30">
-    </button>
-    </a>
-    </div>
-</div>
-
-	
-	<div id="countdown-container">
-  <p>Cuenta atrás para volver a la misa de Jóvenes:</p>
-  <span id="countdown"></span>
-</div>
-
-	
-<div class="container">
-    <div class="column">
-        <form id="frm1">
-            
-            <h2>Trasponedor de acordes:</h2>
-            <textarea name="mydata" rows="10" id="song-input" placeholder="Escribe aquí la canción a transponer."></textarea>
-            <br />
-            <p>Sistema de cifrado de notas:</p>
-            <input type="radio" id="cipher-spanish" name="cipher" value="spanish"checked ><label for="cipher-spanish">Español</label><br />
-            <input type="radio" id="cipher-american" name="cipher" value="american"><label for="cipher-american">Americano</label><br />
-        </form>
-        <p>Pulsa los botones para ajustar la transposición de la canción:</p>
-        <p>
-            <button onclick="decrementShiftCh()">-</button>
-            <button onclick="resetShiftCh()">Reset</button>
-            <button onclick="incrementShiftCh()">+</button>
-        </p>
-		<h2>Cancionero de acordes:</h2>
-		<iframe src="https://docs.google.com/document/d/e/2PACX-1vQMsT4hFWzxLTvNu9-g4WMll2T-otnSPqagqb-uEXEBB-mpTIpVKQfpF5Z0HXPuig/pub?embedded=true" width="100%" height="1000"></iframe>
-    </div>
-
-    <div class="column">
-        <h2 id="transportada">Canción transportada: </h2>
-        <p>Desplazamiento: <span id="shift-label">0</span> semitonos</p>
-        <div id="display"></div>
-      <h2 id="Spotify">Lista de Spotify: </h2>
-      <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/2Ar0TTlpDZXfwVBsJgBEz0?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-	  <h2>Calendario:</h2>
-	  <iframe src="https://calendar.google.com/calendar/embed?src=abc098a7893fd0497ba6f781d88554b80c8cac82da5d313b0bbe0175fadf92f1%40group.calendar.google.com&ctz=Europe%2FMadrid" style="border: 0" width=100% height="500" frameborder="0" scrolling="no"></iframe>
- 		
-	</div>
-   
-
-</div>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shemá SSCC</title>
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="images/favicon.jpg">
+  <!-- Fuente Roboto -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   
-	
+  <style>
+  /* —— Layout general —— */
+  body {
+    font-family: Roboto, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #fafafa;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    min-height: 100vh;
+  }
+
+  /* —— Encabezado —— */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: .8rem 1.5rem;
+    background: #2d2d2d;
+    color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .logo {
+    height: 48px;
+    border-radius: 6px;
+  }
+
+  .site-title {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .sections {
+    display: flex;
+    gap: .8rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .section-button {
+    background: #d9230f;
+    border: none;
+    color: #fff;
+    padding: .45rem .9rem;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background .2s;
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+  }
+
+  .section-button:hover {
+    background: #86160a;
+  }
+
+  /* —— Área principal (panel + editor) —— */
+  #app {
+    display: flex;
+    gap: 2rem;
+    padding: 1.5rem;
+    flex: 1;
+    min-height: 0;
+    flex-direction: row; /* Cambiará a column en dispositivos móviles */
+  }
+
+  #selector  { order: 0; }   /* filtros / búsqueda   */
+  #sidePanel { order: 1; }   /* lista de canciones   */
+  #main      { order: 3; }   /* textarea + display   */
+  /* —— Panel lateral —— */
+  #sidePanel {
+    width: 260px;
+    max-height: 80vh;
+    overflow-y: auto;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: .5rem;
+    display: none;
+    flex-shrink: 0;
+  }
+
+  #sidePanel ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  #sidePanel li {
+    padding: .45rem .6rem;
+    border-radius: 6px;
+    cursor: pointer;
+    user-select: none;
+    transition: background .2s;
+  }
+
+  #sidePanel li:hover {
+    background: #eee;
+  }
+
+  #sidePanel li.active {
+    background: #d0d0d0;
+    font-weight: 600;
+  }
+
+  /* —— Contenido principal —— */
+  #main {
+    flex: 1;
+    min-width: 0; /* Importante para flexbox */
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    width: 100%; /* Asegura que ocupe todo el ancho disponible */
+  }
+
+  h1 {
+    margin-top: 0;
+  }
+
+  /* —— Zona de trabajo —— */
+  #songWrapper {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    flex: 1;
+    min-height: 0;
+    flex-direction: row; /* Cambiará a column en mobile */
+  }
+
+  #song-input {
+    flex: 1;
+    min-height: 50vh; /* Reducido para mejor visualización en móviles */
+    font-family: monospace;
+    padding: .75rem;
+    border-radius: .5rem;
+    border: 1px solid #ccc;
+    white-space: pre;
+    resize: vertical;
+    width: 100%; /* Asegura que ocupe todo el ancho disponible */
+    box-sizing: border-box; /* Para que el padding no se sume al ancho */
+  }
+
+  .controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-width: 200px;
+  }
+
+  .controls label {
+    display: block;
+    margin-bottom: .3rem;
+  }
+
+  .transpose {
+    display: flex;
+    gap: .5rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .transpose button {
+    padding: .5rem 1rem;
+    border: none;
+    border-radius: .5rem;
+    cursor: pointer;
+    background: #2d2d2d;
+    color: #fff;
+    transition: background .2s;
+  }
+
+  .transpose button:hover {
+    background: #000;
+  }
+
+  /* —— Filtros —— */
+  #selector {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem;
+    margin-bottom: 1rem;
+  }
+
+  #songSearch {
+    padding: .45rem .6rem;
+    border: 1px solid #ccc;
+    border-radius: .4rem;
+    min-width: 200px;
+    flex: 2 1 30px;
+  }
+
+  #sectionSelect {
+    padding: .45rem .4rem;
+    min-width: 180px;
+    flex: 1;
+  }
+
+  datalist option {
+    padding: .2rem 0;
+  }
+
+  #display {
+    display: none;
+    white-space: pre;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: .5rem;
+    padding: .75rem;
+    overflow: auto;
+    max-height: 70vh;
+    margin-top: 1rem;
+  }
+
+  .chord {
+    color: #f57c00;
+    font-weight: 700;
+  }
+
+  /* ===== Media Queries Mejoradas ===== */
+
+  /* Tablets & Dispositivos medianos */
+  @media screen and (max-width: 900px) {
+    .header {
+      justify-content: center;
+      text-align: center;
+      padding: .8rem 1rem;
+    }
+    
+    .site-title {
+      order: -1; /* Coloca el título al principio */
+      width: 100%; /* Asegura que ocupe toda la línea */
+      margin-bottom: .5rem;
+    }
+    
+    #app {
+      padding: 1rem;
+      gap: 1.5rem;
+    }
+    
+    #sidePanel {
+      width: 220px; /* Panel lateral algo más estrecho */
+      max-height: 60vh;
+    }
+  }
+
+  /* Móviles & Dispositivos pequeños */
+  @media screen and (max-width: 700px) {
+    .header {
+      padding: .6rem .8rem;
+    }
+    
+    .sections {
+      width: 100%;
+      justify-content: center;
+      gap: .5rem;
+    }
+    
+    .section-button {
+      padding: .4rem .6rem;
+      font-size: .9rem;
+    }
+    
+    #app {
+      flex-direction: column; /* Cambia a columna en móviles */
+      padding: .8rem;
+      gap: 1rem;
+    }
+    
+    #sidePanel {
+      width: 100%; /* Panel lateral a ancho completo */
+      max-height: 35vh; /* Altura máxima reducida */
+    }
+    
+    #songWrapper {
+      flex-direction: column; /* Controles debajo del textarea */
+    }
+    
+    .controls {
+      width: 100%;
+      flex-direction: row;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+    
+    #song-input {
+      min-height: 40vh;
+    }
+    
+    #selector {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    
+    #songSearch, #sectionSelect {
+      width: 100%;
+      height: 36px; /* Altura controlada para la barra de búsqueda */
+      box-sizing: border-box;
+    }
+  }
+
+  /* Para pantallas extremadamente pequeñas */
+  @media screen and (max-width: 400px) {
+    .site-title {
+      font-size: 1.2rem;
+    }
+    
+    .section-button {
+      padding: .35rem .5rem;
+      font-size: .85rem;
+      width: 100%; /* Botones a ancho completo */
+      justify-content: center;
+    }
+    
+    .sections {
+      flex-direction: column;
+      width: 100%;
+    }
+    
+    .transpose {
+      justify-content: center;
+      width: 100%;
+    }
+    
+    #song-input {
+      min-height: 35vh;
+    }
+  }
+
+   /* Vista horizontal en móviles - ajuste optimizado */
+  @media (orientation: landscape) and (max-height: 600px) {
+    /* Reposicionar elementos con los controles ARRIBA del textarea */
+    #songWrapper {
+      flex-direction: column !important; /* Normal, no reverse */
+    }
+    
+    /* Controles arriba */
+    .controls {
+      flex-direction: row !important;
+      justify-content: space-between !important;
+      width: 100% !important;
+      margin-bottom: 0.6rem !important;
+      flex-wrap: wrap !important;
+      order: 1 !important; /* Controles primero */
+    }
+    
+    /* Textbox más grande abajo */
+    #song-input {
+      min-height: 30vh !important; /* Más alto */
+      height: calc(100vh - 300px) !important; /* Altura dinámica */
+      width: 100% !important;
+      order: 2 !important; /* Textarea segundo */
+      margin-top: 0 !important;
+      font-size: 14px !important; /* Texto ligeramente más grande */
+    }
+    
+    /* Mejora de controles */
+    .controls > div:first-child {
+      display: flex !important;
+      flex-direction: row !important;
+      align-items: center !important;
+      gap: 0.5rem !important;
+    }
+    
+    .controls p {
+      margin: 0 !important;
+      white-space: nowrap !important;
+    }
+    
+    .controls label {
+      display: inline-flex !important;
+      align-items: center !important;
+      margin-right: 0.4rem !important;
+      margin-bottom: 0 !important;
+    }
+    
+    /* Botones de transposición */
+    .transpose {
+      flex-wrap: nowrap !important;
+      align-items: center !important;
+    }
+    
+    .transpose button {
+      padding: 0.3rem 0.7rem !important;
+      font-size: 0.9rem !important;
+    }
+    
+    /* Reducir espaciado general */
+    #app {
+      padding: 0.5rem !important;
+      gap: 0.5rem !important;
+    }
+    
+    /* Panel de búsqueda */
+    #selector {
+      margin-bottom: 0.7rem !important;
+    }
+    
+    #songSearch, #sectionSelect {
+      height: 32px !important;
+    }
+    
+    /* Panel lateral más compacto */
+    #sidePanel {
+      max-height: 150vh !important;
+    }
+    
+    #sidePanel li {
+      padding: 0.3rem 0.4rem !important;
+    }
+  }
+  
+  /* Media query más específica para dispositivos Apple */
+  @media (max-width: 926px) and (max-height: 428px) and (orientation: landscape) {
+    #songWrapper {
+      flex-direction: column !important; /* No reverse */
+    }
+    
+    .controls {
+      order: 1 !important; /* Primero controles */
+      margin-bottom: 0.5rem !important;
+    }
+    
+    #song-input {
+      order: 2 !important; /* Después el textarea */
+      min-height: 70vh !important; /* Aún más alto */
+    }
+  }
+  </style>
+  <script src="script.js"></script>
+</head>
+<body>
+
+<!-- ENCABEZADO -->
+<div class="header">
+  <div class="logo-container">
+    <img src="images/shema.jpg" alt="Shemá" class="logo">
+  </div>
+
+  <!-- Título centrado -->
+  <h1 class="site-title">
+    Shemá SSCC
+  </h1>
+
+  <!-- Botones de acceso rápido -->
+  <div class="sections">
+    <button class="section-button"
+            onclick="window.open('https://cutt.ly/Ewc8qAF1','_blank','width=800,height=600')">
+      Cancionero SHEMÁ
+    </button>
+
+    <button class="section-button" title="Nuestra lista de Spotify"
+            onclick="window.open('https://open.spotify.com/playlist/2Ar0TTlpDZXfwVBsJgBEz0?si=d898551170c043d0','_blank','width=800,height=600')">
+      <img src="images/spoty.png" alt="Spotify" width="24" height="24">
+      Spotify
+    </button>
+
+    <button class="section-button" title="Suscríbete al calendario"
+            onclick="window.open('https://cutt.ly/swcrBiuc','_blank','width=800,height=600')">
+      <img src="images/calendar.png" alt="Calendario" width="24" height="24">
+      Calendario
+    </button>
+  </div>
+</div>
+
+
+<!-- APP (panel lateral + editor) -->
+<div id="app">
+
+  <!-- PANEL LATERAL -->
+  <aside id="sidePanel"><ul id="sideList"></ul></aside>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <div id="main">
+    <h4>Puede que las canciones tarden en cargar hasta 30 segundos...</h4>
+
+    <!-- FILTROS -->
+    <section id="selector">
+      <label><strong>Sección:</strong></label>
+      <select id="sectionSelect"><option value="">Todas</option></select>
+      <input id="songSearch" type="text" placeholder="Buscar título…" list="searchSuggestions" />
+      <datalist id="searchSuggestions"></datalist>
+    </section>
+
+    <!-- ZONA DE TRABAJO -->
+    <form id="frm1" style="margin:0;flex:1;display:flex;flex-direction:column;min-height:0;">
+      <div id="songWrapper">
+        <textarea id="song-input" name="mydata" placeholder="La letra y los acordes aparecerán aquí…"></textarea>
+
+        <div class="controls">
+          <div>
+            <p><strong>Sistema de cifrado:</strong></p>
+            <label><input type="radio" id="cipher-spanish" name="cipher" value="spanish" checked> Español</label>
+            <label><input type="radio" id="cipher-american" name="cipher" value="american"> Americano</label>
+          </div>
+          <div class="transpose">
+            <button type="button" onclick="decrementShiftCh()">-</button>
+            <button type="button" onclick="resetShiftCh()">Reset</button>
+            <button type="button" onclick="incrementShiftCh()">+</button>
+            <span>Δ: <strong id="shift-label">0</strong> semitonos</span>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <div id="display"></div>
+  </div>
+</div>
+
+<script>
+/****************************************
+ * 1. CARGA DEL DOCUMENTO DE GOOGLE
+ ****************************************/
+const DOC_URL = "https://docs.google.com/document/d/e/2PACX-1vQMsT4hFWzxLTvNu9-g4WMll2T-otnSPqagqb-uEXEBB-mpTIpVKQfpF5Z0HXPuig/pub";
+const proxy  = url=>`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+
+// ELEMENTOS DOM
+const $sectionSel = document.getElementById('sectionSelect');
+const $search     = document.getElementById('songSearch');
+const $suggestDL  = document.getElementById('searchSuggestions');
+const $side       = document.getElementById('sidePanel');
+const $sideUl     = document.getElementById('sideList');
+const $ta         = document.getElementById('song-input');
+
+// ESTADO
+let canciones=[];   // {title,text,section}
+let secciones=[];   // lista de nombres H1 (sin Índice)
+let originalSong='';
+let currentIdx=-1;
+
+const clean=s=>s.replace(/\r|\t/g,'');
+
+async function cargarCanciones(){
+  try{
+    const res  = await fetch(proxy(DOC_URL));
+    const html = await res.text();
+    parseDoc(html);
+    rellenaSecciones();
+    updateSideList();
+    updateSuggestions();
+  }catch(e){console.error(e);}  
+}
+
+function parseDoc(html){
+  const doc   = new DOMParser().parseFromString(html,'text/html');
+  const nodes = Array.from(doc.body.querySelectorAll('h1,h2,h3,h4,h5,h6,p'));
+  let curSong=null;
+  let currentSection='';
+  nodes.forEach(el=>{
+    const raw=clean(el.textContent||'').trim();
+    if(!raw) return;
+
+    if(el.tagName==='H1'){
+      // Ignorar secciones que incluyen "indice"
+      if(/índice|indice/i.test(raw)) return;
+      currentSection=raw;
+      if(!secciones.includes(currentSection)) secciones.push(currentSection);
+      return;
+    }
+
+    if(el.tagName.match(/^H[2-6]$/)||raw.startsWith('### ')){
+      if(curSong) canciones.push(curSong);
+      curSong={title:raw.replace(/^###\s*/, ''), text:'', section:currentSection};
+    }else if(curSong){
+      curSong.text+=(curSong.text?'\n':'')+raw;
+    }
+  });
+  if(curSong) canciones.push(curSong);
+}
+
+function rellenaSecciones(){
+  secciones.forEach(sec=>{
+    const opt=document.createElement('option');
+    opt.value=sec; opt.textContent=sec; $sectionSel.appendChild(opt);
+  });
+}
+
+/*********** SIDE PANEL LIST ***********/
+function updateSideList(){
+  const filter=$search.value.trim().toLowerCase();
+  const sectionFilter=$sectionSel.value;
+  $sideUl.innerHTML='';
+  const matches=canciones.filter(c=>
+    (sectionFilter===''||c.section===sectionFilter) && c.title.toLowerCase().includes(filter));
+
+  // En dispositivos móviles en vertical, mostrar siempre el panel
+  const isMobilePortrait = window.matchMedia("(max-width: 700px) and (orientation: portrait)").matches;
+  
+  if(matches.length || isMobilePortrait){
+    $side.style.display='block';
+  } else {
+    $side.style.display='none';
+  }
+
+  matches.forEach(song=>{
+    const li=document.createElement('li');
+    li.textContent=song.title;
+    li.onclick=()=>cargarCancion(canciones.indexOf(song));
+    $sideUl.appendChild(li);
+  });
+  highlightSide(currentIdx);
+}
+
+function highlightSide(idx){
+  currentIdx=idx;
+  Array.from($sideUl.children).forEach(li=>li.classList.remove('active'));
+  if(idx===-1) return;
+  const title=canciones[idx]?.title;
+  Array.from($sideUl.children).forEach(li=>{
+    if(li.textContent===title) li.classList.add('active');
+  });
+}
+
+/*********** AUTOCOMPLETE SUGGESTIONS (GLOBAL) ***********/
+function updateSuggestions(){
+  const term=$search.value.trim().toLowerCase();
+  $suggestDL.innerHTML='';
+  if(term.length===0) return;
+  const matches=canciones.filter(c=>c.title.toLowerCase().includes(term)).slice(0,20);
+  matches.forEach(song=>{
+    const opt=document.createElement('option');
+    opt.value=song.title;
+    $suggestDL.appendChild(opt);
+  });
+}
+
+$search.addEventListener('input',()=>{
+  updateSuggestions();
+  updateSideList();
+});
+
+// Al aceptar sugerencia desde datalist —carga inmediata
+$search.addEventListener('change',()=>{
+  const idx=canciones.findIndex(c=>c.title.toLowerCase()=== $search.value.trim().toLowerCase());
+  if(idx!==-1) cargarCancion(idx);
+});
+
+$sectionSel.addEventListener('change',updateSideList);
+
+function cargarCancion(idx){
+  if(idx<0||idx>=canciones.length) return;
+  originalSong=`${canciones[idx].title}\n${canciones[idx].text}`.trim();
+  $ta.value=originalSong;
+  highlightSide(idx);
+  resetShiftCh();
+}
+
+/****************************************
+ * 2. SINCRONIZAR RESULTADO → TEXTAREA
+ ****************************************/
+window.addEventListener('load',()=>{
+  const originalProcessText=window.processText;
+  window.processText=function(){
+    if(originalSong){$ta.value=originalSong;}
+    originalProcessText();
+    const pre=document.querySelector('#display pre');
+    if(pre){
+      let html=pre.innerHTML.replace(/<br\s*\/?>(?=\n?)/gi,'\n');
+      const tmp=document.createElement('div');
+      tmp.innerHTML=html.replace(/&nbsp;/g,' ');
+      const txt=(tmp.textContent||tmp.innerText||'').trimEnd();
+      $ta.value=txt;
+    }
+  };
+});
+
+cargarCanciones();
+</script>
 </body>
 </html>
