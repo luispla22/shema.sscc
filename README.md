@@ -1,67 +1,91 @@
-# SHEMÁ SSCC WEB PAGE
+# SHEMÁ SSCC
 
-Web application developed for the Shemá SSCC choir, featuring a powerful chord transposition tool. The application pulls songs from an official songbook stored in a Google Document and allows users to easily transpose chords to different musical keys.
+Web del coro Shemá SSCC con cancionero y trasponedor de acordes.
 
-## Features
+Las canciones se cargan automáticamente desde un Google Doc publicado y el
+motor de transposición permite cambiar la tonalidad manteniendo la coherencia
+armónica de la canción. Soporta notación española (Do, Re, Mi…) y americana
+(C, D, E…).
 
-- **Song Library**: Automatically loads songs from an official Google Doc songbook
-- **Chord Transposition**: Change the key of any song with easy +/- controls
-- **Song Search**: Quick search functionality to find songs by title
-- **Section Filtering**: Filter songs by section/category
-- **Notation Options**: Support for both Spanish (Do, Re, Mi) and American (C, D, E) notation systems
-- **Custom Song Mode**: Allows users to input and transpose their own songs not in the songbook
-- **Mobile Responsive**: Optimized layout for both desktop and mobile devices
-- **Quick Access Links**: Direct links to Spotify playlist and calendar
+## Funcionalidades
 
-## How It Works
+- **Cancionero en vivo:** carga las canciones del Google Doc oficial con caché
+  local (stale-while-revalidate) — instantáneo en visitas repetidas.
+- **Búsqueda y filtros:** por título o por sección.
+- **Trasponedor coherente:** detecta la tonalidad de la canción y elige
+  enarmónicos consistentes (sostenidos o bemoles según la armadura).
+- **Modo libre:** página separada para pegar tu propia canción.
+- **Acordes complejos:** soporta `Cmaj7`, `Dm7b5`, `G7sus4`, slash chords
+  (`Sol/Si`), notación mixta, etc.
+- **Diseño responsive:** sidebar colapsable en móvil, controles fijos al
+  alcance del pulgar.
 
-The application uses JavaScript to parse and identify chord patterns in text. When a song is loaded or input by the user, the app detects lines containing chords and allows the user to transpose them up or down by semitones while preserving the lyrics and formatting.
-
-## File Structure
+## Estructura del proyecto
 
 ```
-├── index.html      # Main page with songbook integration
-├── index2.html     # Custom song transposition page
-├── script.js       # Core transposition logic
-├── styles.css      # Styling for index2.html
-├── README.md       # Project documentation
-└── images/
-    ├── calendar.png
-    ├── favicon.jpg
-    ├── shema.jpg
-    └── spoty.png
+index.html         # Cancionero principal
+index2.html        # Modo libre (pega tu canción)
+styles.css         # Sistema de diseño "Misal moderno"
+script.js          # Motor de transposición de acordes
+songbook.js        # Cargador del Google Doc con caché
+images/
+  favicon.jpg      # Favicon
+  shema.jpg        # Logo del coro (apple-touch-icon y marca del header)
 ```
 
-## Usage
+## Uso
 
-### Songbook Mode (Main Page)
-1. Open [`index.html`](index.html)
-2. Wait for songs to load from the Google Document (up to 30 seconds)
-3. Use the search box or section dropdown to find a song
-4. Select a song from the side panel to load it
-5. Use the +/- buttons to transpose chords as needed
-6. Choose between Spanish or American notation systems
+### Cancionero ([index.html](index.html))
 
-### Custom Song Mode
-1. Open [`index2.html`](index2.html)
-2. Paste or type your song with chords into the textarea
-3. Use the +/- buttons to transpose the chords
-4. Choose between Spanish or American notation systems
+1. Abre la página. La primera vez tarda unos segundos en descargar el
+   cancionero; después es prácticamente inmediato (caché).
+2. Busca por título o filtra por sección.
+3. Selecciona una canción de la lista.
+4. Usa **+** y **−** para transponer; **Reset** vuelve a la tonalidad
+   original.
+5. Cambia el cifrado entre Español y Americano cuando lo necesites.
+6. Botón **Actualizar** del lateral fuerza un refresh desde Google Docs.
 
-## Implementation Details
+### Modo libre ([index2.html](index2.html))
 
-The chord transposition engine in [`script.js`](script.js) uses a sophisticated algorithm that:
-- Detects chord lines vs. lyric lines
-- Parses musical notation in both Spanish and American systems
-- Preserves chord positioning relative to lyrics
-- Handles various chord modifiers (7, m, dim, etc.)
+1. Pega tu canción con acordes en el área de texto.
+2. Aplica los mismos controles de transposición y cifrado.
 
-_Note: CSS is integrated in HTML files. Not the best practice but it works for now._
+## Detalles del motor de transposición
 
-## Future Improvements
+El motor en [script.js](script.js):
 
-While the transposition tool is already well-developed, there are plans to:
-- Improve mobile responsiveness
-- Extract CSS from HTML into separate files for better maintainability
-- Add print functionality for sheet music
-- Implement offline functionality with local storage
+- Parsea acordes con expresión regular: nota + alteración + cualidad
+  (`m`, `maj`, `dim`, `aug`, `sus`) + extensión + bajo opcional.
+- Detecta la tonalidad de la canción y, al transponer, escoge la familia de
+  enarmónicos consistente (sostenidos o bemoles según la armadura nueva).
+- Distingue líneas de acordes de líneas de letra mediante varias señales
+  combinadas (proporción, densidad de espacios, mayúsculas, modificadores y
+  stop-list de palabras españolas comunes que coinciden con notas: `la`, `el`,
+  `mi`, `do`, `si`, `fa`, `re`).
+- Mantiene la posición original de cada acorde sobre la sílaba aunque cambie
+  de longitud al transponer.
+- Memoiza el parseo: una sola pasada por canción, transposiciones posteriores
+  recalculan sólo la salida.
+
+## Estrategia de carga
+
+[songbook.js](songbook.js) implementa **stale-while-revalidate**:
+
+1. Si hay caché en `localStorage` con menos de 6 h, se renderiza de inmediato.
+2. En paralelo se hace fetch desde Google Docs (intentando primero conexión
+   directa con CORS, cayendo al proxy `corsproxy.io` o `allorigins.win` si
+   falla).
+3. Si los datos cambiaron, se intercambia silenciosamente.
+4. El usuario puede forzar refresh manual con el botón **Actualizar**.
+
+## Despliegue
+
+Es un sitio estático puro (HTML/CSS/JS, sin frameworks ni build step).
+Cualquier hosting estático sirve: GitHub Pages, Netlify, Vercel, Cloudflare
+Pages, S3 + CloudFront, o un simple `python3 -m http.server`.
+
+## Créditos
+
+Motor original de transposición: A. González SJ — AMDG.
+Reescrito y rediseñado para el coro Shemá SSCC.
