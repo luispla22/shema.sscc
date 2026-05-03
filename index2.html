@@ -1,76 +1,141 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" /> 
-    <link rel="stylesheet" type="text/css" href="styles.css">
-    <script src="script.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#f5efe6">
+  <meta name="description" content="Trasponedor de acordes para tu propia canción — coro Shemá SSCC.">
+  <title>Shemá SSCC · Mi propia canción</title>
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="images/favicon.jpg">
+  <link rel="icon" type="image/jpeg" href="images/favicon.jpg">
+  <link rel="apple-touch-icon" href="images/shema.jpg">
 
-    <!-- Fuente Roboto de Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,400;9..144,500;9..144,600&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+
+  <link rel="stylesheet" href="styles.css">
 </head>
-
-
 <body>
-<!-- Encabezado con logotipo y título -->
-<div class="header">
-    <div class="logo-container">
-        <img src="images/shema.jpg" alt="Shemá" class="logo"> 
-    </div>
-    <!-- Sección para elegir -->
-    <div class="sections">
-        <button class="section-button"
-      onclick="window.location.href='index.html'">
-      Volver a la página principal
-    </button>
-        <button class="section-button" onclick="window.open('https://cutt.ly/Ewc8qAF1', '_blank', 'width=800,height=600')">Cancionero SHEMÁ</button>
-      	 <button class="section-button" title="Nuestra lista de spotify" onclick="window.open('https://open.spotify.com/playlist/2Ar0TTlpDZXfwVBsJgBEz0?si=d898551170c043d0', '_blank', 'width=800,height=600')">
-        <img src="images/spotyfy.png" alt="Spotify" width="30" height="30">
-    </button>
-         <button class="section-button" title="Click para suscribirte al Calendario" onclick="window.open('https://cutt.ly/swcrBiuc', '_blank', 'width=800,height=600')">
-        <img src="images/calendar.png" alt="Spotify" width="30" height="30">
-    </button>
+
+<header class="site-header">
+  <a class="brand" href="index.html" aria-label="Volver al cancionero">
+    <img class="brand__mark" src="images/shema.jpg" alt="" height="56">
+    <span class="brand__text">
+      <span class="brand__title">Shemá</span>
+      <span class="brand__subtitle">Escucha la Palabra · Tu propia canción</span>
+    </span>
+  </a>
+
+  <span class="header-spacer"></span>
+
+  <nav class="header-actions" aria-label="Atajos">
+    <a class="action action--primary" href="index.html">
+      <svg class="action__icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5 1.06-1.06L7.12 8l3.94-3.94z"/></svg>
+      <span class="action__label">Volver al cancionero</span>
+      <span class="action__label-short">Cancionero</span>
     </a>
+    <a class="action" href="https://open.spotify.com/playlist/2Ar0TTlpDZXfwVBsJgBEz0?si=d898551170c043d0" target="_blank" rel="noopener" aria-label="Lista de Spotify del coro">
+      <svg class="action__icon action__icon--lg" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm3.2 10.1a.45.45 0 0 1-.62.15c-1.7-1.04-3.84-1.27-6.36-.7a.45.45 0 0 1-.2-.88c2.76-.62 5.13-.35 7.03.81.21.13.27.4.15.62zm.86-1.92a.56.56 0 0 1-.77.18c-1.94-1.19-4.9-1.54-7.2-.84a.56.56 0 1 1-.33-1.07c2.62-.8 5.89-.41 8.13.96.27.16.35.51.17.77zm.07-2c-2.33-1.38-6.17-1.51-8.4-.83a.67.67 0 1 1-.39-1.28c2.55-.78 6.78-.63 9.46.96a.67.67 0 1 1-.67 1.15z"/></svg>
+      <span class="action__label">Spotify</span>
+    </a>
+    <a class="action" href="https://cutt.ly/swcrBiuc" target="_blank" rel="noopener">
+      <svg class="action__icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 2h2v1h6V2h2v1h1.5A1.5 1.5 0 0 1 16 4.5v9A1.5 1.5 0 0 1 14.5 15h-13A1.5 1.5 0 0 1 0 13.5v-9A1.5 1.5 0 0 1 1.5 3H3V2zm-.5 4v7.5a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 .5-.5V6h-12z"/></svg>
+      <span class="action__label">Calendario</span>
+      <span class="action__label-short">Cal.</span>
+    </a>
+  </nav>
+</header>
+
+<main class="solo">
+  <header class="workspace__heading">
+    <span class="workspace__eyebrow">Trasponedor libre</span>
+    <h1 class="workspace__title">Pega tu canción y cambia la tonalidad.</h1>
+  </header>
+
+  <form id="frm1" class="editor-form" onsubmit="return false;">
+    <div class="editor">
+      <div class="editor__main">
+        <div id="display" class="display" data-empty="true" aria-live="polite">
+          <button id="expandToggle" class="display__expand" type="button"
+                  aria-label="Expandir vista de la canción">
+            <svg class="display__expand-icon display__expand-icon--enter" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h5v1.5H3.5V7H2V2zm12 0v5h-1.5V3.5H9V2h5zM2 14V9h1.5v3.5H7V14H2zm12 0H9v-1.5h3.5V9H14v5z"/></svg>
+            <svg class="display__expand-icon display__expand-icon--exit" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 6.5H2V8h5V3H5.5v3.5H3.5zM10.5 6.5V3H9v5h5V6.5h-3.5zM10.5 9.5H14V8H9v5h1.5V9.5zM3.5 9.5V13H5V8H2v1.5h1.5z"/></svg>
+          </button>
+          <p class="display__placeholder">Pega tu canción abajo y la verás aquí con los acordes destacados.</p>
+        </div>
+        <details class="source" open>
+          <summary class="source__summary">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M11.06 1.94a1.5 1.5 0 0 1 2.12 2.12l-9 9-3.18.71.71-3.18 9-9z"/></svg>
+            <span>Texto fuente (edítalo aquí)</span>
+          </summary>
+          <textarea id="song-input" name="mydata" class="editor__textarea"
+                    spellcheck="false" autocapitalize="off" autocorrect="off"
+                    placeholder="Pega aquí tu canción con acordes…"
+                    oninput="processText()"></textarea>
+        </details>
+      </div>
+
+      <aside class="controls" aria-label="Controles de transposición">
+        <div class="control-group">
+          <span class="control-group__label">Cifrado</span>
+          <div class="segmented" role="radiogroup">
+            <input type="radio" id="cipher-spanish" name="cipher" value="spanish" checked
+                   onchange="processText()">
+            <label for="cipher-spanish">Español</label>
+            <input type="radio" id="cipher-american" name="cipher" value="american"
+                   onchange="processText()">
+            <label for="cipher-american">Americano</label>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <span class="control-group__label">Transponer</span>
+          <div class="transposer">
+            <button type="button" class="transposer__btn" onclick="decrementShiftCh()" aria-label="Bajar un semitono">−</button>
+            <button type="button" class="transposer__btn transposer__btn--reset" onclick="resetShiftCh()">Reset</button>
+            <button type="button" class="transposer__btn" onclick="incrementShiftCh()" aria-label="Subir un semitono">+</button>
+          </div>
+        </div>
+
+        <div class="delta">
+          <span>Δ semitonos</span>
+          <span class="delta__value" id="shift-label">0</span>
+        </div>
+
+        <div class="control-group tuner">
+          <span class="control-group__label">Afinador</span>
+          <button type="button" id="tunerToggle" class="tuner__toggle">
+            <svg viewBox="0 0 16 16" aria-hidden="true" class="tuner__icon"><path d="M8 1a3 3 0 0 0-3 3v5a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3zm-1 3a1 1 0 0 1 2 0v5a1 1 0 0 1-2 0V4zM3 8a5 5 0 0 0 4 4.9V14H5v1.5h6V14H9v-1.1A5 5 0 0 0 13 8h-1.5a3.5 3.5 0 0 1-7 0H3z"/></svg>
+            <span class="tuner__toggle-label">Activar afinador</span>
+          </button>
+          <div class="tuner__panel" id="tunerPanel" hidden>
+            <div class="tuner__readout">
+              <span class="tuner__note" id="tunerNote">—</span>
+              <span class="tuner__freq" id="tunerFreq">— Hz</span>
+            </div>
+            <div class="tuner__meter" aria-hidden="true">
+              <div class="tuner__meter-track">
+                <div class="tuner__meter-needle" id="tunerNeedle"></div>
+              </div>
+              <div class="tuner__meter-marks">
+                <span>−50¢</span><span>0</span><span>+50¢</span>
+              </div>
+            </div>
+            <p class="tuner__hint" id="tunerHint">Esperando audio…</p>
+          </div>
+        </div>
+      </aside>
     </div>
-</div>
+  </form>
+</main>
 
+<button id="collapseControls" class="panel-collapse panel-collapse--right" type="button" aria-label="Ocultar/mostrar controles" title="Ocultar controles">
+  <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 3 10.5 8l-5 5L4.44 12 8.38 8 4.44 4z"/></svg>
+</button>
 
-</div>
+<script src="script.js" defer></script>
+<script src="tuner.js" defer></script>
 
-	
-<div class="container">
-    <div class="column">
-        <form id="frm1">
-            
-            <h2>Trasponedor de acordes:</h2>
-            <textarea name="mydata" rows="10" id="song-input" placeholder="Escribe aquí la canción a transponer."></textarea>
-            <br />
-            <p>Sistema de cifrado de notas:</p>
-            <input type="radio" id="cipher-spanish" name="cipher" value="spanish"checked ><label for="cipher-spanish">Español</label><br />
-            <input type="radio" id="cipher-american" name="cipher" value="american"><label for="cipher-american">Americano</label><br />
-        </form>
-        <p>Pulsa los botones para ajustar la transposición de la canción:</p>
-        <p>
-            <button onclick="decrementShiftCh()">-</button>
-            <button onclick="resetShiftCh()">Reset</button>
-            <button onclick="incrementShiftCh()">+</button>
-        </p>
-		
-    </div>
-
-    <div class="column">
-        <h2 id="transportada">Canción transportada: </h2>
-        <p>Desplazamiento: <span id="shift-label">0</span> semitonos</p>
-        <div id="display"></div>
-     
-	 
-	</div>
-   
-
-</div>
-  
-	
 </body>
 </html>
